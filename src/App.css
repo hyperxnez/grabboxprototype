@@ -119,21 +119,20 @@
     flex-direction: column;
     padding: 1rem;
     gap: 1rem;
-    overflow: visible;
+    overflow-y: auto;
   }
   .app-container {
     height: auto;
     min-height: 100vh;
-    overflow-y: auto;
   }
   .view-pane {
     flex: none;
-    min-height: 600px;
+    min-height: auto;
     height: auto;
     width: 100%;
   }
   .view-pane:first-child {
-    flex: none; /* remove fixed flex-basis on height */
+    flex: none;
   }
   .view-pane:last-child {
     flex: none;
@@ -149,32 +148,34 @@
     justify-content: flex-start;
   }
   .machine-wrapper {
-    zoom: 0.85;
+    transform: scale(0.85);
     transform-origin: top left;
+    margin-bottom: calc(800px * (0.85 - 1));
+    margin-right: calc(1200px * (0.85 - 1));
   }
 }
 
 @media (max-width: 768px) {
-  .view-pane {
-    min-height: 500px;
-  }
   .machine-wrapper {
-    zoom: 0.65;
+    transform: scale(0.6);
+    margin-bottom: calc(800px * (0.6 - 1));
+    margin-right: calc(1200px * (0.6 - 1));
   }
 }
 
 @media (max-width: 480px) {
-  .view-pane {
-    min-height: 400px;
-  }
   .device-mockup.mobile {
-    justify-content: center;
+    justify-content: flex-start;
   }
   .machine-wrapper {
-    zoom: 0.45;
-    /* fallback for Firefox if needed, but zoom is widely supported on mobile */
+    transform: scale(0.4);
+    margin-bottom: calc(800px * (0.4 - 1));
+    margin-right: calc(1200px * (0.4 - 1));
   }
   .mobile-app-wrapper {
-    zoom: 0.85;
+    transform: scale(0.85);
+    transform-origin: top left;
+    margin-bottom: calc(812px * (0.85 - 1));
+    margin-right: calc(375px * (0.85 - 1));
   }
 }
