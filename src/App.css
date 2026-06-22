@@ -23,17 +23,17 @@
 
 .split-view {
   display: flex;
+  flex-direction: row-reverse; /* Puts the first child (App) on the right */
   flex: 1;
   overflow: hidden;
   gap: 2rem;
-  padding: 2rem;
-  max-width: 1600px;
+  padding: 1.5rem 2rem;
+  max-width: 1920px; /* Increased to allow full HD monitors to utilize space */
   margin: 0 auto;
   width: 100%;
 }
 
 .view-pane {
-  flex: 1;
   display: flex;
   flex-direction: column;
   background: white;
@@ -41,6 +41,14 @@
   box-shadow: var(--shadow-md);
   overflow: hidden;
   border: 1px solid #e5e7eb;
+}
+
+.view-pane:first-child {
+  flex: 0 0 420px; /* App pane is fixed width on the right */
+}
+
+.view-pane:last-child {
+  flex: 1; /* Machine pane takes all remaining space */
 }
 
 .pane-header {
@@ -122,6 +130,13 @@
     flex: none;
     min-height: 600px;
     height: auto;
+    width: 100%;
+  }
+  .view-pane:first-child {
+    flex: none; /* remove fixed flex-basis on height */
+  }
+  .view-pane:last-child {
+    flex: none;
   }
   .device-mockup {
     padding: 1rem;
