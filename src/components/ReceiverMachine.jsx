@@ -110,15 +110,30 @@ function ReceiverMachine({ currentTransaction }) {
           </div>
           <div className="locker-row">
             <div className={`locker hot ${machineState === 'dispense' && currentTransaction?.itemCategory === 'hot' ? 'open' : ''}`}>
-               {machineState === 'dispense' && currentTransaction?.itemCategory === 'hot' && <div className="glow"></div>}
+               {machineState === 'dispense' && currentTransaction?.itemCategory === 'hot' && (
+                 <>
+                   <div className="glow"></div>
+                   {currentTransaction.itemIcon && <div className="item-inside-locker animate-fade-in">{currentTransaction.itemIcon}</div>}
+                 </>
+               )}
             </div>
             <div className={`locker cold ${machineState === 'dispense' && currentTransaction?.itemCategory === 'cold' ? 'open' : ''}`}>
-               {machineState === 'dispense' && currentTransaction?.itemCategory === 'cold' && <div className="glow"></div>}
+               {machineState === 'dispense' && currentTransaction?.itemCategory === 'cold' && (
+                 <>
+                   <div className="glow"></div>
+                   {currentTransaction.itemIcon && <div className="item-inside-locker animate-fade-in">{currentTransaction.itemIcon}</div>}
+                 </>
+               )}
             </div>
           </div>
           <div className="locker-row">
             <div className={`locker ambient ${machineState === 'dispense' && currentTransaction?.itemCategory === 'ambient' ? 'open' : ''}`}>
-               {machineState === 'dispense' && currentTransaction?.itemCategory === 'ambient' && <div className="glow"></div>}
+               {machineState === 'dispense' && currentTransaction?.itemCategory === 'ambient' && (
+                 <>
+                   <div className="glow"></div>
+                   {currentTransaction.itemIcon && <div className="item-inside-locker animate-fade-in">{currentTransaction.itemIcon}</div>}
+                 </>
+               )}
             </div>
             <div className="locker ambient"></div>
           </div>

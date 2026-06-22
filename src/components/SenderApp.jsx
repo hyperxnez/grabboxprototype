@@ -7,8 +7,25 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
   const [formData, setFormData] = useState({
     type: '',
     itemCategory: null,
+    itemIcon: null,
+    itemName: '',
     message: ''
   });
+
+  const categoryOptions = {
+    hot: [
+      { id: 'hot_food', icon: '🍱', name: 'Cơm hộp Nóng' },
+      { id: 'hot_soup', icon: '🍲', name: 'Súp/Canh Nóng' }
+    ],
+    cold: [
+      { id: 'cold_drink', icon: '🥤', name: 'Trà sữa/Nước lạnh' },
+      { id: 'cold_cake', icon: '🍰', name: 'Bánh ngọt/Kem' }
+    ],
+    ambient: [
+      { id: 'amb_doc', icon: '📚', name: 'Tài liệu/Sách' },
+      { id: 'amb_clothes', icon: '👕', name: 'Quần áo/Đồ khô' }
+    ]
+  };
 
   const handleSelectType = (type) => {
     setFormData({ ...formData, type });
@@ -20,7 +37,11 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
   };
 
   const handleSelectCategory = (category) => {
-    setFormData({ ...formData, itemCategory: category });
+    setFormData({ ...formData, itemCategory: category, itemIcon: null, itemName: '' });
+  };
+
+  const handleSelectItem = (icon, name) => {
+    setFormData({ ...formData, itemIcon: icon, itemName: name });
     setStep(3);
   };
 
@@ -31,7 +52,7 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
   };
 
   const resetFlow = () => {
-    setFormData({ type: '', itemCategory: null, message: '' });
+    setFormData({ type: '', itemCategory: null, itemIcon: null, itemName: '', message: '' });
     setStep(1);
     onReset();
   };
@@ -55,7 +76,14 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
         <div className="app-header-mobile">
           <h2>GrabBox App</h2>
           {step > 1 && step < 4 && (
-            <button className="back-btn" onClick={() => setStep(step - 1)}>
+            <button className="back-btn" onClick={() => {
+              if (step === 2 && formData.itemCategory) {
+                 // go back to category selection
+                 setFormData({...formData, itemCategory: null});
+              } else {
+                 setStep(step - 1);
+              }
+            }}>
               ← Back
             </button>
           )}
@@ -93,32 +121,57 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
 
           {step === 2 && (
             <div className="step-content">
-              <h3>Phân Loại Đồ</h3>
-              <p className="subtitle">Chọn khu vực bảo quản phù hợp</p>
-              
-              <div className="category-grid">
-                <button 
-                  className={`category-card ${formData.itemCategory === 'hot' ? 'selected' : ''}`}
-                  onClick={() => handleSelectCategory('hot')}
-                >
-                  <span className="icon hot">♨️</span>
-                  <span>Khu Vực Nóng</span>
-                </button>
-                <button 
-                  className={`category-card ${formData.itemCategory === 'cold' ? 'selected' : ''}`}
-                  onClick={() => handleSelectCategory('cold')}
-                >
-                  <span className="icon cold">❄️</span>
-                  <span>Khu Vực Lạnh</span>
-                </button>
-                <button 
-                  className={`category-card ${formData.itemCategory === 'ambient' ? 'selected' : ''}`}
-                  onClick={() => handleSelectCategory('ambient')}
-                >
-                  <span className="icon ambient">📦</span>
-                  <span>Khu Vực Thường</span>
-                </button>
-              </div>
+              {!formData.itemCategory ? (
+                <>
+                  <h3>Phân Loại Đồ</h3>
+                  <p className="subtitle">Chọn khu vực bảo quản phù hợp</p>
+                  
+                  <div className="category-grid">
+                    <button 
+                      className={`category-card ${formData.itemCategory === 'hot' ? 'selected' : ''}`}
+                      onClick={() => handleSelectCategory('hot')}
+                    >
+                      <span className="icon hot">♨️</span>
+                      <span>Khu Vực Nóng</span>
+                    </button>
+                    <button 
+                      className={`category-card ${formData.itemCategory === 'cold' ? 'selected' : ''}`}
+                      onClick={() => handleSelectCategory('cold')}
+                    >
+                      <span className="icon cold">❄️</span>
+                      <span>Khu Vực Lạnh</span>
+                    </button>
+                    <button 
+                      className={`category-card ${formData.itemCategory === 'ambient' ? 'selected' : ''}`}
+                      onClick={() => handleSelectCategory('ambient')}
+                    >
+                      <span className="icon ambient">📦</span>
+                      <span>Khu Vực Thường</span>
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h3>Chọn Vật Phẩm</h3>
+                  <p className="subtitle">Mô phỏng vật phẩm gửi trong {
+                    formData.itemCategory === 'hot' ? 'Khu Nóng' : 
+                    formData.itemCategory === 'cold' ? 'Khu Lạnh' : 'Khu Thường'
+                  }</p>
+
+                  <div className="category-grid animate-fade-in">
+                    {categoryOptions[formData.itemCategory].map(item => (
+                      <button 
+                        key={item.id}
+                        className="category-card item-select"
+                        onClick={() => handleSelectItem(item.icon, item.name)}
+                      >
+                        <span className="icon item-emoji">{item.icon}</span>
+                        <span>{item.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           )}
 
@@ -127,13 +180,26 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
               <h3>Gửi Lời Nhắn</h3>
               <p className="subtitle">Lời nhắn sẽ được phát qua loa Bluetooth</p>
               
+              <div className="selected-item-preview">
+                {formData.type === 'locker' && formData.itemIcon && (
+                  <div className="preview-badge">
+                    <span>Đang gửi:</span> {formData.itemIcon} {formData.itemName}
+                  </div>
+                )}
+                {formData.type === 'gift' && (
+                  <div className="preview-badge">
+                    <span>Đang mua:</span> 🎁 Quà tặng bí mật
+                  </div>
+                )}
+              </div>
+
               <form onSubmit={handleSubmit} className="message-form">
                 <div className="form-group">
-                  <label>Nội dung lời nhắn thoại (Mô phỏng)</label>
+                  <label>Nội dung lời nhắn thoại</label>
                   <textarea 
                     className="input-field" 
                     rows="4" 
-                    placeholder="Nhập lời nhắn của bạn ở đây..."
+                    placeholder="Ví dụ: Chúc em ngon miệng nha..."
                     value={formData.message}
                     onChange={(e) => setFormData({...formData, message: e.target.value})}
                     required
@@ -166,9 +232,12 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
                 <p><strong>Loại:</strong> {currentTransaction.type === 'locker' ? 'Gửi Locker' : 'Mua Quà'}</p>
                 {currentTransaction.itemCategory && (
                   <p><strong>Bảo quản:</strong> {
-                    currentTransaction.itemCategory === 'hot' ? 'Nóng' : 
-                    currentTransaction.itemCategory === 'cold' ? 'Lạnh' : 'Thường'
+                    currentTransaction.itemCategory === 'hot' ? 'Khu Vực Nóng' : 
+                    currentTransaction.itemCategory === 'cold' ? 'Khu Vực Lạnh' : 'Khu Vực Thường'
                   }</p>
+                )}
+                {currentTransaction.itemName && (
+                  <p><strong>Vật phẩm:</strong> {currentTransaction.itemIcon} {currentTransaction.itemName}</p>
                 )}
               </div>
 
