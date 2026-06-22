@@ -28,7 +28,6 @@ function App() {
     <div className="app-container">
       <header className="app-header">
         <h1>GrabBox Prototype</h1>
-        <p>Interactive demonstration of Sender App & Receiver Machine</p>
       </header>
       
       <main className="split-view">
