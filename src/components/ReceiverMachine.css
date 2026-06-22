@@ -44,12 +44,13 @@
 .locker-row {
   display: flex;
   gap: 16px;
+  width: 100%;
 }
 
 .locker {
-  width: 150px;
-  height: 150px;
-  flex: none;
+  flex: 1;
+  aspect-ratio: 1 / 1;
+  max-width: 180px;
   background: #e2b98e;
   border: 2px solid #b3855a;
   border-radius: 6px;
