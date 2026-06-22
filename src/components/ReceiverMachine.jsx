@@ -52,7 +52,6 @@ function ReceiverMachine({ currentTransaction }) {
         { facingMode: "environment" }, 
         config,
         (decodedText) => {
-          // Success callback
           if (currentTransaction && decodedText === currentTransaction.code) {
             html5QrCode.stop().then(() => {
               setMachineState('processing');
@@ -98,17 +97,20 @@ function ReceiverMachine({ currentTransaction }) {
 
   return (
     <div className="machine-wrapper">
-      {/* Machine physical body structure */}
       <div className="machine-header">GrabBox</div>
       
       <div className="machine-body">
         {/* Left Side: Lockers */}
         <div className="lockers-panel">
+          {/* Row 1: Ambient */}
           <div className="locker-row">
+            <div className="locker ambient"></div>
             <div className="locker ambient"></div>
             <div className="locker ambient"></div>
           </div>
+          {/* Row 2: Hot */}
           <div className="locker-row">
+            <div className="locker hot"></div>
             <div className={`locker hot ${machineState === 'dispense' && currentTransaction?.itemCategory === 'hot' ? 'open' : ''}`}>
                {machineState === 'dispense' && currentTransaction?.itemCategory === 'hot' && (
                  <>
@@ -117,6 +119,11 @@ function ReceiverMachine({ currentTransaction }) {
                  </>
                )}
             </div>
+            <div className="locker hot"></div>
+          </div>
+          {/* Row 3: Cold */}
+          <div className="locker-row">
+            <div className="locker cold"></div>
             <div className={`locker cold ${machineState === 'dispense' && currentTransaction?.itemCategory === 'cold' ? 'open' : ''}`}>
                {machineState === 'dispense' && currentTransaction?.itemCategory === 'cold' && (
                  <>
@@ -125,8 +132,11 @@ function ReceiverMachine({ currentTransaction }) {
                  </>
                )}
             </div>
+            <div className="locker cold"></div>
           </div>
+          {/* Row 4: Ambient */}
           <div className="locker-row">
+            <div className="locker ambient"></div>
             <div className={`locker ambient ${machineState === 'dispense' && currentTransaction?.itemCategory === 'ambient' ? 'open' : ''}`}>
                {machineState === 'dispense' && currentTransaction?.itemCategory === 'ambient' && (
                  <>
