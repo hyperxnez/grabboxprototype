@@ -1,0 +1,254 @@
+.mobile-app-wrapper {
+  width: 375px;
+  height: 812px;
+  background: white;
+  border-radius: 40px;
+  box-shadow: 0 0 0 10px #1f2937, var(--shadow-lg);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-status-bar {
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  background: white;
+  z-index: 20;
+}
+
+.status-icons {
+  display: flex;
+  gap: 6px;
+}
+
+.status-icons .icon {
+  width: 16px;
+  height: 12px;
+  background: #1f2937;
+  border-radius: 2px;
+}
+
+.mobile-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #f9fafb;
+  overflow-y: auto;
+}
+
+.app-header-mobile {
+  padding: 1rem 1.5rem;
+  background: white;
+  display: flex;
+  align-items: center;
+  position: relative;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.app-header-mobile h2 {
+  font-size: 1.25rem;
+  flex: 1;
+  text-align: center;
+  margin: 0;
+}
+
+.back-btn {
+  position: absolute;
+  left: 1rem;
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.step-container {
+  padding: 1.5rem;
+  flex: 1;
+}
+
+.step-content h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.service-card {
+  display: flex;
+  align-items: center;
+  padding: 1.25rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.service-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.service-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-right: 1rem;
+}
+
+.service-icon.locker { background: #e0e7ff; color: var(--primary); }
+.service-icon.gift { background: #dcfce7; color: var(--secondary); }
+
+.service-info h4 {
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+  color: #1f2937;
+}
+
+.service-info p {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.category-card {
+  padding: 1.5rem;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.category-card .icon {
+  font-size: 1.5rem;
+  margin-right: 1rem;
+}
+
+.category-card:hover {
+  border-color: #cbd5e1;
+}
+
+.category-card.selected {
+  border-color: var(--primary);
+  background: #eef2ff;
+  color: var(--primary);
+}
+
+.w-full {
+  width: 100%;
+}
+
+.success-state {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.success-icon {
+  width: 64px;
+  height: 64px;
+  background: var(--secondary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.code-display {
+  background: #f3f4f6;
+  padding: 1rem 2rem;
+  border-radius: var(--radius-md);
+  margin: 1.5rem 0;
+  width: 100%;
+  border: 2px dashed #d1d5db;
+}
+
+.code-display .label {
+  display: block;
+  font-size: 0.8rem;
+  color: #6b7280;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.code-display .code {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--primary);
+}
+
+.qr-placeholder {
+  width: 150px;
+  height: 150px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  margin: 0 auto 1.5rem;
+}
+
+.qr-inner {
+  width: 100%;
+  height: 100%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+.transaction-details {
+  background: white;
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  width: 100%;
+  text-align: left;
+  border: 1px solid #e5e7eb;
+}
+
+.transaction-details p {
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.transaction-details p:last-child {
+  margin-bottom: 0;
+}
