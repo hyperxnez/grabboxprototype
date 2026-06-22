@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { Html5Qrcode } from 'html5-qrcode';
 import './ReceiverMachine.css';
 
 function ReceiverMachine({ currentTransaction }) {
-  const [machineState, setMachineState] = useState('idle'); // idle, input, processing, dispense
+  const [machineState, setMachineState] = useState('idle'); // idle, input, scanning, processing, dispense
   const [pinInput, setPinInput] = useState('');
   const [error, setError] = useState('');
+  const html5QrCodeRef = useRef(null);
 
   const handleKeypadClick = (num) => {
     if (pinInput.length < 4) {
@@ -38,6 +40,55 @@ function ReceiverMachine({ currentTransaction }) {
       return () => clearTimeout(timer);
     }
   }, [machineState]);
+
+  useEffect(() => {
+    if (machineState === 'scanning') {
+      const html5QrCode = new Html5Qrcode("qr-reader");
+      html5QrCodeRef.current = html5QrCode;
+      
+      const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+      
+      html5QrCode.start(
+        { facingMode: "environment" }, 
+        config,
+        (decodedText) => {
+          // Success callback
+          if (currentTransaction && decodedText === currentTransaction.code) {
+            html5QrCode.stop().then(() => {
+              setMachineState('processing');
+            }).catch(err => console.error("Error stopping scanner", err));
+          } else {
+            setError('Mã QR không hợp lệ!');
+          }
+        },
+        (errorMessage) => {
+          // Failure callback, ignore to avoid spamming logs
+        }
+      ).catch((err) => {
+        setError('Không thể mở Camera: ' + err.message);
+      });
+
+      return () => {
+        if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
+          html5QrCodeRef.current.stop().catch(err => console.error("Error stopping scanner on unmount", err));
+        }
+      };
+    }
+  }, [machineState, currentTransaction]);
+
+  const stopScanning = () => {
+    if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
+      html5QrCodeRef.current.stop().then(() => {
+        setMachineState('idle');
+        setError('');
+      }).catch(err => {
+        console.error(err);
+        setMachineState('idle');
+      });
+    } else {
+      setMachineState('idle');
+    }
+  };
 
   const resetMachine = () => {
     setMachineState('idle');
@@ -81,12 +132,12 @@ function ReceiverMachine({ currentTransaction }) {
                 <div className="screen-content idle-screen animate-fade-in">
                   <h3>Xin Chào!</h3>
                   <p>Vui lòng nhập mã hoặc quét QR để nhận đồ</p>
-                  <button className="btn btn-primary" onClick={() => setMachineState('input')}>
+                  <button className="btn btn-primary w-full" style={{marginBottom: '0.5rem'}} onClick={() => setMachineState('input')}>
                     Nhập Mã PIN
                   </button>
-                  <div className="qr-scan-area">
-                    [Khu vực quét QR]
-                  </div>
+                  <button className="btn btn-outline w-full" onClick={() => { setMachineState('scanning'); setError(''); }}>
+                    📷 Quét Mã QR
+                  </button>
                 </div>
               )}
 
@@ -111,6 +162,16 @@ function ReceiverMachine({ currentTransaction }) {
                     <button className="key action primary" onClick={handleSubmit}>OK</button>
                   </div>
                   <button className="btn-text" onClick={() => setMachineState('idle')}>Quay lại</button>
+                </div>
+              )}
+
+              {machineState === 'scanning' && (
+                <div className="screen-content scanning-screen animate-fade-in">
+                  <h3>Quét Mã QR</h3>
+                  <p style={{fontSize: '0.8rem', margin: '0.5rem 0'}}>Đưa mã QR vào khung hình camera</p>
+                  {error && <div className="error-text">{error}</div>}
+                  <div id="qr-reader" style={{ width: '100%', height: '250px', background: 'black', borderRadius: '8px', overflow: 'hidden' }}></div>
+                  <button className="btn-text" onClick={stopScanning} style={{marginTop: '1rem'}}>Hủy</button>
                 </div>
               )}
 

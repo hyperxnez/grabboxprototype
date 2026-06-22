@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import './SenderApp.css';
 
 function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
@@ -158,7 +159,7 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
               </div>
               
               <div className="qr-placeholder">
-                <div className="qr-inner">QR CODE</div>
+                <QRCodeSVG value={currentTransaction.code} size={130} />
               </div>
 
               <div className="transaction-details">
