@@ -26,7 +26,7 @@ function ReceiverMachine({ currentTransaction }) {
     if (currentTransaction && pinInput === currentTransaction.code) {
       setMachineState('processing');
     } else {
-      setError('Mã PIN không hợp lệ!');
+      setError('Invalid PIN code!');
       setPinInput('');
     }
   };
@@ -57,14 +57,14 @@ function ReceiverMachine({ currentTransaction }) {
               setMachineState('processing');
             }).catch(err => console.error("Error stopping scanner", err));
           } else {
-            setError('Mã QR không hợp lệ!');
+            setError('Invalid QR code!');
           }
         },
         (errorMessage) => {
           // Failure callback, ignore to avoid spamming logs
         }
       ).catch((err) => {
-        setError('Không thể mở Camera: ' + err.message);
+        setError('Cannot access Camera: ' + err.message);
       });
 
       return () => {
@@ -95,6 +95,25 @@ function ReceiverMachine({ currentTransaction }) {
     setError('');
   };
 
+  const renderLocker = (type, isTarget) => {
+    const isOpen = machineState === 'dispense' && isTarget;
+    return (
+      <div className={`locker ${type} ${isOpen ? 'open' : ''}`}>
+        <div className="locker-interior">
+          {isOpen && (
+            <>
+              <div className="glow"></div>
+              {currentTransaction.itemIcon && <div className="item-inside-locker animate-fade-in">{currentTransaction.itemIcon}</div>}
+            </>
+          )}
+        </div>
+        <div className="locker-door">
+          <div className="locker-handle"></div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="machine-wrapper">
       <div className="machine-header">GrabBox</div>
@@ -104,48 +123,27 @@ function ReceiverMachine({ currentTransaction }) {
         <div className="lockers-panel">
           {/* Row 1: Ambient */}
           <div className="locker-row">
-            <div className="locker ambient"></div>
-            <div className="locker ambient"></div>
-            <div className="locker ambient"></div>
+            {renderLocker('ambient', false)}
+            {renderLocker('ambient', false)}
+            {renderLocker('ambient', false)}
           </div>
           {/* Row 2: Hot */}
           <div className="locker-row">
-            <div className="locker hot"></div>
-            <div className={`locker hot ${machineState === 'dispense' && currentTransaction?.itemCategory === 'hot' ? 'open' : ''}`}>
-               {machineState === 'dispense' && currentTransaction?.itemCategory === 'hot' && (
-                 <>
-                   <div className="glow"></div>
-                   {currentTransaction.itemIcon && <div className="item-inside-locker animate-fade-in">{currentTransaction.itemIcon}</div>}
-                 </>
-               )}
-            </div>
-            <div className="locker hot"></div>
+            {renderLocker('hot', false)}
+            {renderLocker('hot', currentTransaction?.itemCategory === 'hot')}
+            {renderLocker('hot', false)}
           </div>
           {/* Row 3: Cold */}
           <div className="locker-row">
-            <div className="locker cold"></div>
-            <div className={`locker cold ${machineState === 'dispense' && currentTransaction?.itemCategory === 'cold' ? 'open' : ''}`}>
-               {machineState === 'dispense' && currentTransaction?.itemCategory === 'cold' && (
-                 <>
-                   <div className="glow"></div>
-                   {currentTransaction.itemIcon && <div className="item-inside-locker animate-fade-in">{currentTransaction.itemIcon}</div>}
-                 </>
-               )}
-            </div>
-            <div className="locker cold"></div>
+            {renderLocker('cold', false)}
+            {renderLocker('cold', currentTransaction?.itemCategory === 'cold')}
+            {renderLocker('cold', false)}
           </div>
           {/* Row 4: Ambient */}
           <div className="locker-row">
-            <div className="locker ambient"></div>
-            <div className={`locker ambient ${machineState === 'dispense' && currentTransaction?.itemCategory === 'ambient' ? 'open' : ''}`}>
-               {machineState === 'dispense' && currentTransaction?.itemCategory === 'ambient' && (
-                 <>
-                   <div className="glow"></div>
-                   {currentTransaction.itemIcon && <div className="item-inside-locker animate-fade-in">{currentTransaction.itemIcon}</div>}
-                 </>
-               )}
-            </div>
-            <div className="locker ambient"></div>
+            {renderLocker('ambient', false)}
+            {renderLocker('ambient', currentTransaction?.itemCategory === 'ambient')}
+            {renderLocker('ambient', false)}
           </div>
         </div>
 
@@ -155,20 +153,20 @@ function ReceiverMachine({ currentTransaction }) {
             <div className="screen">
               {machineState === 'idle' && (
                 <div className="screen-content idle-screen animate-fade-in">
-                  <h3>Xin Chào!</h3>
-                  <p>Vui lòng nhập mã hoặc quét QR để nhận đồ</p>
+                  <h3>Welcome!</h3>
+                  <p>Please enter PIN or scan QR to receive your item</p>
                   <button className="btn btn-primary w-full" style={{marginBottom: '0.5rem'}} onClick={() => setMachineState('input')}>
-                    Nhập Mã PIN
+                    Enter PIN Code
                   </button>
                   <button className="btn btn-outline w-full" onClick={() => { setMachineState('scanning'); setError(''); }}>
-                    📷 Quét Mã QR
+                    📷 Scan QR Code
                   </button>
                 </div>
               )}
 
               {machineState === 'input' && (
                 <div className="screen-content input-screen animate-fade-in">
-                  <h3>Nhập Mã PIN</h3>
+                  <h3>Enter PIN Code</h3>
                   <div className="pin-display">
                     {pinInput.padEnd(4, '•').split('').map((char, i) => (
                       <span key={i} className="pin-dot">{char}</span>
@@ -186,17 +184,17 @@ function ReceiverMachine({ currentTransaction }) {
                     <button className="key" onClick={() => handleKeypadClick('0')}>0</button>
                     <button className="key action primary" onClick={handleSubmit}>OK</button>
                   </div>
-                  <button className="btn-text" onClick={() => setMachineState('idle')}>Quay lại</button>
+                  <button className="btn-text" onClick={() => setMachineState('idle')}>Go Back</button>
                 </div>
               )}
 
               {machineState === 'scanning' && (
                 <div className="screen-content scanning-screen animate-fade-in">
-                  <h3>Quét Mã QR</h3>
-                  <p style={{fontSize: '0.8rem', margin: '0.5rem 0'}}>Đưa mã QR vào khung hình camera</p>
+                  <h3>Scan QR Code</h3>
+                  <p style={{fontSize: '0.8rem', margin: '0.5rem 0'}}>Place QR code inside the camera frame</p>
                   {error && <div className="error-text">{error}</div>}
                   <div id="qr-reader" style={{ width: '100%', height: '250px', background: 'black', borderRadius: '8px', overflow: 'hidden' }}></div>
-                  <button className="btn-text" onClick={stopScanning} style={{marginTop: '1rem'}}>Hủy</button>
+                  <button className="btn-text" onClick={stopScanning} style={{marginTop: '1rem'}}>Cancel</button>
                 </div>
               )}
 
@@ -207,7 +205,7 @@ function ReceiverMachine({ currentTransaction }) {
                     <div className="wave"></div>
                     <div className="wave"></div>
                   </div>
-                  <h3>Đang phát lời nhắn...</h3>
+                  <h3>Playing message...</h3>
                   <p className="message-text">"{currentTransaction?.message}"</p>
                 </div>
               )}
@@ -215,14 +213,14 @@ function ReceiverMachine({ currentTransaction }) {
               {machineState === 'dispense' && (
                 <div className="screen-content dispense-screen animate-fade-in">
                   <div className="success-icon">✓</div>
-                  <h3>Thành Công!</h3>
+                  <h3>Success!</h3>
                   <p>
                     {currentTransaction?.type === 'locker' 
-                      ? 'Tủ của bạn đã được mở.' 
-                      : 'Hệ thống đang giao quà tặng cho bạn.'}
+                      ? 'Your locker has been opened.' 
+                      : 'The system is dispensing your gift.'}
                   </p>
                   <button className="btn btn-outline" onClick={resetMachine} style={{marginTop: '1rem'}}>
-                    Đóng
+                    Close
                   </button>
                 </div>
               )}
@@ -263,7 +261,7 @@ function ReceiverMachine({ currentTransaction }) {
                   <div className="item gift-box arrived animate-drop">🎁</div>
                )}
             </div>
-            <div className="slot-label">Cửa Nhận Đồ</div>
+            <div className="slot-label">Dispense Slot</div>
           </div>
         </div>
       </div>

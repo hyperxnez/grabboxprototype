@@ -14,16 +14,16 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
 
   const categoryOptions = {
     hot: [
-      { id: 'hot_food', icon: '🍱', name: 'Cơm hộp Nóng' },
-      { id: 'hot_soup', icon: '🍲', name: 'Súp/Canh Nóng' }
+      { id: 'hot_food', icon: '🍱', name: 'Hot Bento' },
+      { id: 'hot_soup', icon: '🍲', name: 'Hot Soup' }
     ],
     cold: [
-      { id: 'cold_drink', icon: '🥤', name: 'Trà sữa/Nước lạnh' },
-      { id: 'cold_cake', icon: '🍰', name: 'Bánh ngọt/Kem' }
+      { id: 'cold_drink', icon: '🥤', name: 'Cold Drink' },
+      { id: 'cold_cake', icon: '🍰', name: 'Cake / Ice Cream' }
     ],
     ambient: [
-      { id: 'amb_doc', icon: '📚', name: 'Tài liệu/Sách' },
-      { id: 'amb_clothes', icon: '👕', name: 'Quần áo/Đồ khô' }
+      { id: 'amb_doc', icon: '📚', name: 'Books / Docs' },
+      { id: 'amb_clothes', icon: '👕', name: 'Clothes' }
     ]
   };
 
@@ -92,8 +92,8 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
         <div className="step-container animate-fade-in">
           {step === 1 && (
             <div className="step-content">
-              <h3>Chọn Dịch Vụ</h3>
-              <p className="subtitle">Bạn muốn sử dụng dịch vụ nào?</p>
+              <h3>Select Service</h3>
+              <p className="subtitle">Which service would you like to use?</p>
               
               <button 
                 className="service-card"
@@ -101,8 +101,8 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
               >
                 <div className="service-icon locker">📦</div>
                 <div className="service-info">
-                  <h4>Gửi đồ vào Locker</h4>
-                  <p>Lưu trữ an toàn đa nhiệt độ</p>
+                  <h4>Send to Locker</h4>
+                  <p>Multi-temperature secure storage</p>
                 </div>
               </button>
 
@@ -112,8 +112,8 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
               >
                 <div className="service-icon gift">🎁</div>
                 <div className="service-info">
-                  <h4>Mua quà tặng</h4>
-                  <p>Từ máy bán hàng tự động</p>
+                  <h4>Buy a Gift</h4>
+                  <p>From the vending machine</p>
                 </div>
               </button>
             </div>
@@ -123,8 +123,8 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
             <div className="step-content">
               {!formData.itemCategory ? (
                 <>
-                  <h3>Phân Loại Đồ</h3>
-                  <p className="subtitle">Chọn khu vực bảo quản phù hợp</p>
+                  <h3>Item Category</h3>
+                  <p className="subtitle">Select the appropriate storage zone</p>
                   
                   <div className="category-grid">
                     <button 
@@ -132,30 +132,30 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
                       onClick={() => handleSelectCategory('hot')}
                     >
                       <span className="icon hot">♨️</span>
-                      <span>Khu Vực Nóng</span>
+                      <span>Hot Zone</span>
                     </button>
                     <button 
                       className={`category-card ${formData.itemCategory === 'cold' ? 'selected' : ''}`}
                       onClick={() => handleSelectCategory('cold')}
                     >
                       <span className="icon cold">❄️</span>
-                      <span>Khu Vực Lạnh</span>
+                      <span>Cold Zone</span>
                     </button>
                     <button 
                       className={`category-card ${formData.itemCategory === 'ambient' ? 'selected' : ''}`}
                       onClick={() => handleSelectCategory('ambient')}
                     >
                       <span className="icon ambient">📦</span>
-                      <span>Khu Vực Thường</span>
+                      <span>Ambient Zone</span>
                     </button>
                   </div>
                 </>
               ) : (
                 <>
-                  <h3>Chọn Vật Phẩm</h3>
-                  <p className="subtitle">Mô phỏng vật phẩm gửi trong {
-                    formData.itemCategory === 'hot' ? 'Khu Nóng' : 
-                    formData.itemCategory === 'cold' ? 'Khu Lạnh' : 'Khu Thường'
+                  <h3>Select Item</h3>
+                  <p className="subtitle">Simulate item to store in {
+                    formData.itemCategory === 'hot' ? 'Hot Zone' : 
+                    formData.itemCategory === 'cold' ? 'Cold Zone' : 'Ambient Zone'
                   }</p>
 
                   <div className="category-grid animate-fade-in">
@@ -177,29 +177,29 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
 
           {step === 3 && (
             <div className="step-content">
-              <h3>Gửi Lời Nhắn</h3>
-              <p className="subtitle">Lời nhắn sẽ được phát qua loa Bluetooth</p>
+              <h3>Add a Message</h3>
+              <p className="subtitle">Message will be played via Bluetooth speaker</p>
               
               <div className="selected-item-preview">
                 {formData.type === 'locker' && formData.itemIcon && (
                   <div className="preview-badge">
-                    <span>Đang gửi:</span> {formData.itemIcon} {formData.itemName}
+                    <span>Sending:</span> {formData.itemIcon} {formData.itemName}
                   </div>
                 )}
                 {formData.type === 'gift' && (
                   <div className="preview-badge">
-                    <span>Đang mua:</span> 🎁 Quà tặng bí mật
+                    <span>Buying:</span> 🎁 Mystery Gift
                   </div>
                 )}
               </div>
 
               <form onSubmit={handleSubmit} className="message-form">
                 <div className="form-group">
-                  <label>Nội dung lời nhắn thoại</label>
+                  <label>Voice message content</label>
                   <textarea 
                     className="input-field" 
                     rows="4" 
-                    placeholder="Ví dụ: Chúc em ngon miệng nha..."
+                    placeholder="e.g., Enjoy your meal!"
                     value={formData.message}
                     onChange={(e) => setFormData({...formData, message: e.target.value})}
                     required
@@ -207,7 +207,7 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
                 </div>
                 
                 <button type="submit" className="btn btn-primary w-full">
-                  Hoàn Tất & Lấy Mã
+                  Complete & Get Code
                 </button>
               </form>
             </div>
@@ -216,11 +216,11 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
           {step === 4 && currentTransaction && (
             <div className="step-content success-state">
               <div className="success-icon animate-pulse-glow">✓</div>
-              <h3>Tạo mã thành công!</h3>
-              <p className="subtitle">Sử dụng mã dưới đây tại máy GrabBox</p>
+              <h3>Success!</h3>
+              <p className="subtitle">Use the code below at the GrabBox machine</p>
               
               <div className="code-display">
-                <span className="label">MÃ PIN</span>
+                <span className="label">PIN CODE</span>
                 <span className="code">{currentTransaction.code}</span>
               </div>
               
@@ -229,20 +229,20 @@ function SenderApp({ onGenerateCode, currentTransaction, onReset }) {
               </div>
 
               <div className="transaction-details">
-                <p><strong>Loại:</strong> {currentTransaction.type === 'locker' ? 'Gửi Locker' : 'Mua Quà'}</p>
+                <p><strong>Type:</strong> {currentTransaction.type === 'locker' ? 'Locker Deposit' : 'Gift Purchase'}</p>
                 {currentTransaction.itemCategory && (
-                  <p><strong>Bảo quản:</strong> {
-                    currentTransaction.itemCategory === 'hot' ? 'Khu Vực Nóng' : 
-                    currentTransaction.itemCategory === 'cold' ? 'Khu Vực Lạnh' : 'Khu Vực Thường'
+                  <p><strong>Storage:</strong> {
+                    currentTransaction.itemCategory === 'hot' ? 'Hot Zone' : 
+                    currentTransaction.itemCategory === 'cold' ? 'Cold Zone' : 'Ambient Zone'
                   }</p>
                 )}
                 {currentTransaction.itemName && (
-                  <p><strong>Vật phẩm:</strong> {currentTransaction.itemIcon} {currentTransaction.itemName}</p>
+                  <p><strong>Item:</strong> {currentTransaction.itemIcon} {currentTransaction.itemName}</p>
                 )}
               </div>
 
               <button className="btn btn-outline w-full" onClick={resetFlow} style={{marginTop: '1.5rem'}}>
-                Tạo Đơn Khác
+                Create Another Order
               </button>
             </div>
           )}
